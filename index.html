@@ -17,6 +17,7 @@
       --shadow: 0 20px 50px rgba(14, 32, 46, 0.12);
       --danger: #b3261e;
       --warning: #d18b14;
+      --white: #ffffff;
     }
 
     * { box-sizing: border-box; }
@@ -27,9 +28,23 @@
       background: linear-gradient(180deg, #dff8f0 0%, var(--bg) 26%, #eef3f8 100%);
       color: var(--ink);
     }
+    a { color: inherit; }
     button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
     [hidden] { display: none !important; }
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      background: var(--ink);
+      color: var(--white);
+      padding: 10px 14px;
+      z-index: 1000;
+      border-radius: 0 0 12px 12px;
+    }
+    .skip-link:focus {
+      left: 12px;
+    }
 
     .app-shell {
       min-height: 100vh;
@@ -131,7 +146,7 @@
     .password-wrap {
       position: relative;
     }
-    .password-wrap input { padding-right: 48px; }
+    .password-wrap input { padding-right: 52px; }
     .password-toggle {
       position: absolute;
       right: 10px;
@@ -142,13 +157,6 @@
       color: var(--muted);
       font-weight: 700;
     }
-
-    .password-feedback {
-      font-size: 0.8rem;
-      color: var(--muted);
-      min-height: 18px;
-    }
-    .password-feedback strong { display: inline-block; min-width: 62px; }
 
     .strength-bar {
       height: 8px;
@@ -164,6 +172,12 @@
       border-radius: inherit;
       transition: width 0.2s ease, background 0.2s ease;
     }
+    .password-feedback {
+      font-size: 0.8rem;
+      color: var(--muted);
+      min-height: 18px;
+    }
+    .password-feedback strong { display: inline-block; min-width: 62px; }
 
     .btn {
       border: 0;
@@ -484,42 +498,70 @@
       font-size: 0.92rem;
     }
 
-    .modal-backdrop {
+    .screen-registration {
       position: fixed;
       inset: 0;
-      background: rgba(10, 19, 28, 0.55);
+      z-index: 200;
+      background: linear-gradient(180deg, #dff8f0 0%, #edf4f1 30%, #eef3f8 100%);
       display: grid;
       place-items: center;
-      padding: 20px;
-      z-index: 200;
+      padding: 18px;
     }
-    .modal {
-      width: min(760px, 100%);
-      max-height: min(88vh, 900px);
-      overflow: auto;
-      background: rgba(255,255,255,0.9);
+    .registration-shell {
+      width: min(1200px, 100%);
+      min-height: min(92vh, 900px);
+      display: grid;
+      grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
+      background: rgba(255,255,255,0.82);
       border: 1px solid var(--line);
-      box-shadow: 0 24px 70px rgba(15,20,25,0.25);
       border-radius: 28px;
-      padding: 20px 18px 18px;
-      backdrop-filter: blur(12px);
+      overflow: hidden;
+      box-shadow: 0 28px 80px rgba(20,33,61,0.18);
+      backdrop-filter: blur(10px);
     }
-    .modal-header {
+    .registration-side {
+      background: linear-gradient(180deg, rgba(20,200,160,0.15), rgba(20,33,61,0.02));
+      padding: 32px 28px;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .registration-side h2 {
+      margin: 0;
+      font-size: clamp(2.4rem, 4vw, 4.5rem);
+      letter-spacing: -0.07em;
+      line-height: 0.9;
+    }
+    .registration-side p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.5;
+      max-width: 28ch;
+    }
+    .registration-form-wrap {
+      padding: 28px 26px 18px;
+      max-height: 100%;
+      overflow: auto;
+    }
+    .registration-header {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
+      gap: 14px;
+      margin-bottom: 10px;
     }
-    .modal-header h3 {
+    .registration-header h3 {
       margin: 0;
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-size: clamp(1.8rem, 3vw, 2.7rem);
       letter-spacing: -0.05em;
     }
-    .modal-header small {
-      color: var(--muted);
+    .registration-header small {
       display: block;
-      margin-top: 2px;
+      margin-top: 4px;
+      color: var(--muted);
     }
     .close-btn {
       border: 0;
@@ -535,11 +577,11 @@
     .stepper {
       display: flex;
       gap: 8px;
-      margin: 10px 0 18px;
+      margin: 14px 0 18px;
       flex-wrap: wrap;
     }
     .step-pill {
-      flex: 1;
+      flex: 1 1 110px;
       min-width: 120px;
       padding: 10px 12px;
       border-radius: 12px;
@@ -623,10 +665,19 @@
       .nav { justify-content: space-between; }
       .nav button { padding: 10px 8px; }
       .row { grid-template-columns: 1fr; }
+      .registration-shell {
+        grid-template-columns: 1fr;
+      }
+      .registration-side {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
     }
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
   <div id="splash" aria-live="polite">
     <div class="app-shell">
       <div style="display:flex;flex-direction:column;align-items:center;gap:18px;transform:translateY(-8px)">
@@ -677,7 +728,7 @@
       <button class="menu-btn" id="logoutBtn" type="button">Log out</button>
     </header>
 
-    <main class="main">
+    <main id="main-content" class="main">
       <section class="pane active" data-pane="home">
         <div class="tip">Welcome back — your demo feed is running locally in this browser.</div>
         <div class="composer">
@@ -729,7 +780,25 @@
     </main>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: 'AIzaSyDuqCvLn80NHR5NeUBZ8nILPru1fEAjtek',
+      authDomain: 'murmur-deab3.firebaseapp.com',
+      projectId: 'murmur-deab3',
+      storageBucket: 'murmur-deab3.firebasestorage.app',
+      messagingSenderId: '785155307572',
+      appId: '1:785155307572:web:f22a41c5f84fdfe7e03261',
+      measurementId: 'G-ZRT8VKV29D'
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
     const DEFAULT_STATE = {
       loggedIn: false,
       currentUser: { name: 'Maya Chen', email: 'maya@example.com', username: '@maya' },
@@ -995,142 +1064,176 @@
       return '';
     }
 
+    function isAdult(dateString) {
+      if (!dateString) return false;
+      const birth = new Date(dateString);
+      const now = new Date();
+      const age = now.getFullYear() - birth.getFullYear();
+      const monthDiff = now.getMonth() - birth.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < birth.getDate())) return age - 1 >= 13;
+      return age >= 13;
+    }
+
+    function saveProfileToFirestore(uid, profileData) {
+      return setDoc(doc(db, 'users', uid), profileData, { merge: true });
+    }
+
     function openRegisterWizard() {
       const overlay = document.createElement('div');
-      overlay.className = 'modal-backdrop';
+      overlay.className = 'screen-registration';
       overlay.innerHTML = `
-        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="register-title">
-          <div class="modal-header">
+        <div class="registration-shell" role="dialog" aria-modal="true" aria-labelledby="register-title">
+          <aside class="registration-side">
             <div>
-              <h3 id="register-title">Create your account</h3>
-              <small>Join Murmur in a few easy steps.</small>
+              <div class="brand-row" style="margin-bottom:18px;">
+                <span class="brand-mark"></span>
+                <span>murmur</span>
+              </div>
+              <h2>Join the social space built for people you actually know.</h2>
             </div>
-            <button class="close-btn" type="button" aria-label="Close">×</button>
-          </div>
+            <p>Start with your basic details, build your profile, and review everything before creating your account.</p>
+          </aside>
 
-          <div class="stepper">
-            <div class="step-pill active">1. Account</div>
-            <div class="step-pill">2. Profile</div>
-            <div class="step-pill">3. Review</div>
-          </div>
-
-          <div class="step-body active" data-step="1">
-            <div class="row">
-              <div class="field">
-                <label>First name</label>
-                <input name="firstName" type="text" placeholder="First name" />
-              </div>
-              <div class="field">
-                <label>Last name</label>
-                <input name="lastName" type="text" placeholder="Last name" />
-              </div>
-            </div>
-            <div class="row">
-              <div class="field">
-                <label>Middle name (optional)</label>
-                <input name="middleName" type="text" placeholder="Middle name" />
-              </div>
-              <div class="field">
-                <label>Birthday</label>
-                <input name="birthday" type="date" />
-              </div>
-            </div>
-            <div class="field">
-              <label>Username</label>
-              <input name="username" type="text" placeholder="@jian123" />
-              <div class="error" data-user-error></div>
-            </div>
-            <div class="field">
-              <label>Email address</label>
-              <input name="email" type="email" placeholder="you@example.com" />
-            </div>
-            <div class="field">
-              <label>Password</label>
-              <div class="password-wrap">
-                <input name="password" type="password" placeholder="Create a password" />
-                <button class="password-toggle" type="button">Show</button>
-              </div>
-              <div class="strength-bar"><div class="strength-fill"></div></div>
-              <div class="password-feedback"><strong>Weak</strong> Use 8+ characters and mix letters, numbers, symbols.</div>
-            </div>
-            <div class="field">
-              <label>Confirm password</label>
-              <div class="password-wrap">
-                <input name="confirmPassword" type="password" placeholder="Confirm your password" />
-                <button class="password-toggle" type="button">Show</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="step-body" data-step="2">
-            <div class="field">
-              <label>Profile photo (optional)</label>
-              <input name="photo" type="file" accept="image/*" />
-            </div>
-            <div class="field">
-              <label>Short bio</label>
-              <textarea name="bio" placeholder="Tell people a little about yourself..."></textarea>
-            </div>
-            <div class="row">
-              <div class="field">
-                <label>Gender</label>
-                <select name="gender">
-                  <option value="">Prefer not to say</option>
-                  <option>Female</option>
-                  <option>Male</option>
-                  <option>Non-binary</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>Location</label>
-                <input name="location" type="text" placeholder="City, Country" />
-              </div>
-            </div>
-            <div class="field">
-              <label>School</label>
-              <input name="school" type="text" placeholder="School or university" />
-            </div>
-            <div class="field">
-              <label>Interests</label>
-              <div class="interest-grid">
-                <span class="interest-option">Music</span>
-                <span class="interest-option">Gaming</span>
-                <span class="interest-option">Anime</span>
-                <span class="interest-option">Writing</span>
-                <span class="interest-option">Photography</span>
-                <span class="interest-option">Sports</span>
-                <span class="interest-option">Technology</span>
-                <span class="interest-option">Travel</span>
-                <span class="interest-option">Art</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="step-body" data-step="3">
-            <div class="profile-preview">
-              <div class="avatar" id="preview-avatar">U</div>
+          <div class="registration-form-wrap">
+            <div class="registration-header">
               <div>
-                <h4 id="preview-name">Your name</h4>
-                <p id="preview-username">@yourname</p>
+                <h3 id="register-title">Create account</h3>
+                <small>Step-by-step signup</small>
+              </div>
+              <button class="close-btn" type="button" aria-label="Close">×</button>
+            </div>
+
+            <div class="stepper">
+              <div class="step-pill active">1. Account</div>
+              <div class="step-pill">2. Profile</div>
+              <div class="step-pill">3. Review</div>
+            </div>
+
+            <div class="step-body active" data-step="1">
+              <div class="row">
+                <div class="field">
+                  <label>First name</label>
+                  <input name="firstName" type="text" placeholder="First name" />
+                </div>
+                <div class="field">
+                  <label>Last name</label>
+                  <input name="lastName" type="text" placeholder="Last name" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="field">
+                  <label>Middle name (optional)</label>
+                  <input name="middleName" type="text" placeholder="Middle name" />
+                </div>
+                <div class="field">
+                  <label>Birthday</label>
+                  <input name="birthday" type="date" />
+                </div>
+              </div>
+              <div class="field">
+                <label>Username</label>
+                <input name="username" type="text" placeholder="@jian123" />
+                <div class="error" data-user-error></div>
+              </div>
+              <div class="field">
+                <label>Email address</label>
+                <input name="email" type="email" placeholder="you@example.com" />
+              </div>
+              <div class="field">
+                <label>Password</label>
+                <div class="password-wrap">
+                  <input name="password" type="password" placeholder="Create a password" />
+                  <button class="password-toggle" type="button">Show</button>
+                </div>
+                <div class="strength-bar"><div class="strength-fill"></div></div>
+                <div class="password-feedback"><strong>Weak</strong> Use 8+ characters and mix letters, numbers, symbols.</div>
+              </div>
+              <div class="field">
+                <label>Confirm password</label>
+                <div class="password-wrap">
+                  <input name="confirmPassword" type="password" placeholder="Confirm your password" />
+                  <button class="password-toggle" type="button">Show</button>
+                </div>
               </div>
             </div>
-            <div class="field">
-              <label>Bio</label>
-              <textarea id="preview-bio" readonly placeholder="No bio yet"></textarea>
-            </div>
-            <div class="field">
-              <label>Summary</label>
-              <div id="preview-summary" style="color:var(--muted); line-height:1.5; min-height:70px;"></div>
-            </div>
-            <label class="checkbox-row">
-              <input type="checkbox" id="termsCheck" />
-              <span>I agree to the <a href="#">Terms of Service</a>, <a href="#">Privacy Policy</a>, and I am 13+ years old.</span>
-            </label>
-          </div>
 
-          <div class="modal-actions">
-            <button type="button" class="btn ghost" data-action="back">Back</button>
-            <button type="button" class="btn primary" data-action="next">Next</button>
+            <div class="step-body" data-step="2">
+              <div class="field">
+                <label>Profile photo (optional)</label>
+                <input name="photo" type="file" accept="image/*" />
+              </div>
+              <div class="field">
+                <label>Short bio</label>
+                <textarea name="bio" placeholder="Tell people a little about yourself..."></textarea>
+              </div>
+              <div class="row">
+                <div class="field">
+                  <label>Gender</label>
+                  <select name="gender">
+                    <option value="">Prefer not to say</option>
+                    <option>Female</option>
+                    <option>Male</option>
+                    <option>Non-binary</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Location</label>
+                  <input name="location" type="text" placeholder="City, Country" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="field">
+                  <label>School</label>
+                  <input name="school" type="text" placeholder="School or university" />
+                </div>
+                <div class="field">
+                  <label>Phone number</label>
+                  <input name="phone" type="tel" placeholder="Optional" />
+                </div>
+              </div>
+              <div class="field">
+                <label>Hobbies & interests</label>
+                <div class="interest-grid">
+                  <span class="interest-option">Music</span>
+                  <span class="interest-option">Gaming</span>
+                  <span class="interest-option">Anime</span>
+                  <span class="interest-option">Writing</span>
+                  <span class="interest-option">Photography</span>
+                  <span class="interest-option">Sports</span>
+                  <span class="interest-option">Technology</span>
+                  <span class="interest-option">Travel</span>
+                  <span class="interest-option">Art</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="step-body" data-step="3">
+              <div class="profile-preview">
+                <div class="avatar" id="preview-avatar">U</div>
+                <div>
+                  <h4 id="preview-name">Your name</h4>
+                  <p id="preview-username">@yourname</p>
+                </div>
+              </div>
+              <div class="field">
+                <label>Bio</label>
+                <textarea id="preview-bio" readonly placeholder="No bio yet"></textarea>
+              </div>
+              <div class="field">
+                <label>Summary</label>
+                <div id="preview-summary" style="color:var(--muted); line-height:1.5; min-height:70px;"></div>
+              </div>
+              <label class="checkbox-row">
+                <input type="checkbox" id="termsCheck" />
+                <span>I agree to the <a href="#">Terms of Service</a>, <a href="#">Privacy Policy</a>, and I am 13+ years old.</span>
+              </label>
+            </div>
+
+            <div class="modal-actions">
+              <button type="button" class="btn ghost" data-action="back">Back</button>
+              <button type="button" class="btn primary" data-action="next">Next</button>
+            </div>
           </div>
         </div>
       `;
@@ -1138,7 +1241,7 @@
       document.body.appendChild(overlay);
 
       let step = 1;
-      const form = overlay.querySelector('.modal');
+      const form = overlay.querySelector('.registration-shell');
       const stepPills = [...overlay.querySelectorAll('.step-pill')];
       const stepBodies = [...overlay.querySelectorAll('.step-body')];
       const nextButton = overlay.querySelector('[data-action="next"]');
@@ -1228,10 +1331,14 @@
       overlay.querySelector('input[name="email"]').addEventListener('input', updateStepUI);
       overlay.querySelector('input[name="birthday"]').addEventListener('input', updateStepUI);
 
-      nextButton.addEventListener('click', () => {
+      nextButton.addEventListener('click', async () => {
         if (step === 1) {
           if (!firstNameInput.value.trim() || !lastNameInput.value.trim()) {
             showToast('Add your first and last name.');
+            return;
+          }
+          if (!overlay.querySelector('input[name="birthday"]').value || !isAdult(overlay.querySelector('input[name="birthday"]').value)) {
+            showToast('You must be at least 13 to create an account.');
             return;
           }
           const usernameError = validateUsername(usernameInput.value);
@@ -1277,29 +1384,53 @@
           const normalizedUser = username.startsWith('@') ? username : '@' + username;
           const email = overlay.querySelector('input[name="email"]').value.trim();
           const password = passwordInput.value.trim();
-
-          state.loggedIn = true;
-          state.currentUser = {
+          const userProfile = {
+            firstName: first,
+            middleName: middle,
+            lastName: last,
             name: fullName,
+            username: normalizedUser,
             email,
-            username: normalizedUser
+            birthday: overlay.querySelector('input[name="birthday"]').value,
+            gender: overlay.querySelector('select[name="gender"]').value,
+            school: overlay.querySelector('input[name="school"]').value.trim(),
+            location: overlay.querySelector('input[name="location"]').value.trim(),
+            phone: overlay.querySelector('input[name="phone"]').value.trim(),
+            bio: bioInput.value.trim(),
+            interests: [...selectedInterests],
+            createdAt: new Date().toISOString(),
+            coverPhoto: '',
+            profilePhoto: ''
           };
-          state.users.me = { ...state.currentUser };
 
-          if (!state.posts.some(post => post.author === 'me')) {
-            state.posts.unshift({
-              id: Date.now(),
-              author: 'me',
-              text: 'Just joined Murmur. Hello, everyone!',
-              likes: 0,
-              liked: false
-            });
+          nextButton.disabled = true;
+          nextButton.textContent = 'Creating...';
+
+          try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const uid = userCredential.user.uid;
+            await saveProfileToFirestore(uid, userProfile);
+            if (!userCredential.user.emailVerified) {
+              await sendEmailVerification(userCredential.user);
+            }
+            state.loggedIn = true;
+            state.currentUser = {
+              name: fullName,
+              email,
+              username: normalizedUser,
+              uid
+            };
+            state.users.me = { ...state.currentUser };
+            saveState();
+            if (overlay) overlay.remove();
+            showApp();
+            showToast('Account created successfully!');
+          } catch (error) {
+            console.error('Create account failed:', error);
+            showToast(error.message || 'Unable to create account.');
+            nextButton.disabled = false;
+            nextButton.textContent = 'Create account';
           }
-
-          saveState();
-          overlay.remove();
-          showApp();
-          showToast('Account created successfully!');
         }
       });
 
@@ -1319,7 +1450,7 @@
       updateStrength();
     }
 
-    function login(email, password) {
+    async function login(email, password) {
       const normalized = String(email || '').trim();
       if (!normalized || !String(password || '').trim()) {
         authError.textContent = 'Enter both email and password.';
@@ -1329,11 +1460,24 @@
         authError.textContent = 'Use a valid email address.';
         return;
       }
-      state.loggedIn = true;
-      state.currentUser = { name: 'Maya Chen', email: normalized, username: '@maya' };
-      state.users.me = { name: 'Maya Chen', email: normalized, username: '@maya' };
-      saveState();
-      showApp();
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, normalized, password);
+        const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+        const profile = userDoc.exists() ? userDoc.data() : {};
+        state.loggedIn = true;
+        state.currentUser = {
+          uid: userCredential.user.uid,
+          name: profile.name || userCredential.user.displayName || 'Maya Chen',
+          email: userCredential.user.email || normalized,
+          username: profile.username || '@maya'
+        };
+        state.users.me = { ...state.currentUser };
+        saveState();
+        showApp();
+      } catch (error) {
+        console.error('Login failed:', error);
+        authError.textContent = error.message || 'Login failed. Please try again.';
+      }
     }
 
     function resetPassword() {
@@ -1377,7 +1521,12 @@
     document.getElementById('resetBtn').addEventListener('click', resetPassword);
     document.getElementById('postBtn').addEventListener('click', createPost);
     document.getElementById('sendBtn').addEventListener('click', sendMessage);
-    document.getElementById('logoutBtn').addEventListener('click', () => {
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+      } catch (error) {
+        console.warn('Sign out failed:', error);
+      }
       state.loggedIn = false;
       saveState();
       showAuth();
@@ -1411,6 +1560,19 @@
       post.likes += post.liked ? 1 : -1;
       saveState();
       renderPosts();
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        state.loggedIn = true;
+        state.currentUser = {
+          uid: user.uid,
+          name: state.currentUser?.name || 'Maya Chen',
+          email: user.email || state.currentUser?.email || 'maya@example.com',
+          username: state.currentUser?.username || '@maya'
+        };
+        saveState();
+      }
     });
 
     setTimeout(() => {
