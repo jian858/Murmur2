@@ -15,6 +15,8 @@
       --acc-strong: #0aa981;
       --on: #04261e;
       --shadow: 0 20px 50px rgba(14, 32, 46, 0.12);
+      --danger: #b3261e;
+      --warning: #d18b14;
     }
 
     * { box-sizing: border-box; }
@@ -25,7 +27,7 @@
       background: linear-gradient(180deg, #dff8f0 0%, var(--bg) 26%, #eef3f8 100%);
       color: var(--ink);
     }
-    button, input { font: inherit; }
+    button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
     [hidden] { display: none !important; }
 
@@ -52,22 +54,12 @@
       gap: 18px;
     }
 
-    .logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 22px 22px 22px 12px;
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px 10px 10px 8px;
       background: var(--acc);
-      position: relative;
-      box-shadow: var(--shadow);
-    }
-
-    .logo::before {
-      content: "";
-      position: absolute;
-      inset: 12px 10px 10px 10px;
-      background: var(--on);
-      clip-path: path("M32 6C17.6 6 6 16.4 6 29.5c0 6.2 2.6 11.8 6.9 16L10 57l11.3-5.6c3.4 1.2 7 1.8 10.7 1.8 14.4 0 26-10.4 26-23.5S46.4 6 32 6z");
-      opacity: 0;
+      display: inline-block;
     }
 
     .brand h1 {
@@ -114,7 +106,7 @@
       font-weight: 600;
     }
 
-    input {
+    input, select, textarea {
       width: 100%;
       border: 1px solid var(--line);
       background: rgba(255,255,255,0.7);
@@ -124,9 +116,53 @@
       outline: none;
       transition: border 0.2s ease, box-shadow 0.2s ease;
     }
-    input:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: var(--acc);
       box-shadow: 0 0 0 4px rgba(20,200,160,0.12);
+    }
+    textarea { min-height: 90px; resize: vertical; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+    .password-wrap input { padding-right: 48px; }
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .password-feedback {
+      font-size: 0.8rem;
+      color: var(--muted);
+      min-height: 18px;
+    }
+    .password-feedback strong { display: inline-block; min-width: 62px; }
+
+    .strength-bar {
+      height: 8px;
+      width: 100%;
+      background: rgba(20,33,61,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--danger);
+      border-radius: inherit;
+      transition: width 0.2s ease, background 0.2s ease;
     }
 
     .btn {
@@ -152,6 +188,11 @@
       background: rgba(20,33,61,0.04);
       color: var(--ink);
     }
+    .btn.small {
+      width: auto;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+    }
 
     .tiny {
       text-align: center;
@@ -169,7 +210,7 @@
 
     .error {
       min-height: 18px;
-      color: #b3261e;
+      color: var(--danger);
       font-weight: 700;
       font-size: 0.9rem;
     }
@@ -194,13 +235,6 @@
       font-weight: 800;
       letter-spacing: -0.04em;
       font-size: 1.4rem;
-    }
-    .brand-mark {
-      width: 28px;
-      height: 28px;
-      border-radius: 10px 10px 10px 8px;
-      background: var(--acc);
-      display: inline-block;
     }
     .nav {
       display: flex;
@@ -352,6 +386,10 @@
       border-top: 1px solid var(--line);
       align-items: center;
       cursor: pointer;
+      width: 100%;
+      background: transparent;
+      color: inherit;
+      text-align: left;
     }
     .chat-item.active {
       background: rgba(20,33,61,0.05);
@@ -408,10 +446,6 @@
       padding: 14px 16px 18px;
       border-top: 1px solid var(--line);
     }
-    .composer-chat input {
-      background: rgba(20,33,61,0.04);
-      border: 1px solid transparent;
-    }
 
     .notice {
       display: flex;
@@ -450,12 +484,145 @@
       font-size: 0.92rem;
     }
 
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 19, 28, 0.55);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      z-index: 200;
+    }
+    .modal {
+      width: min(760px, 100%);
+      max-height: min(88vh, 900px);
+      overflow: auto;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--line);
+      box-shadow: 0 24px 70px rgba(15,20,25,0.25);
+      border-radius: 28px;
+      padding: 20px 18px 18px;
+      backdrop-filter: blur(12px);
+    }
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .modal-header h3 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      letter-spacing: -0.05em;
+    }
+    .modal-header small {
+      color: var(--muted);
+      display: block;
+      margin-top: 2px;
+    }
+    .close-btn {
+      border: 0;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(20,33,61,0.06);
+      color: var(--ink);
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .stepper {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0 18px;
+      flex-wrap: wrap;
+    }
+    .step-pill {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(20,33,61,0.04);
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .step-pill.active {
+      background: rgba(20,200,160,0.14);
+      color: var(--ink);
+    }
+
+    .step-body {
+      display: none;
+      gap: 12px;
+    }
+    .step-body.active { display: grid; }
+
+    .interest-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .interest-option {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(20,33,61,0.02);
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.9rem;
+    }
+    .interest-option.selected {
+      background: rgba(20,200,160,0.12);
+      border-color: rgba(20,200,160,0.45);
+      color: var(--ink);
+    }
+
+    .profile-preview {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: rgba(20,33,61,0.04);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      margin-top: 4px;
+    }
+    .profile-preview .avatar {
+      width: 62px;
+      height: 62px;
+    }
+    .profile-preview h4, .profile-preview p { margin: 0; }
+    .profile-preview p { color: var(--muted); }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 4px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .checkbox-row input { width: 18px; height: 18px; margin-top: 2px; }
+    .checkbox-row a { color: var(--ink); }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
     @media (max-width: 780px) {
       .auth-card { grid-template-columns: 1fr; }
       .chat-layout { grid-template-columns: 1fr; }
       .conversation { min-height: 420px; }
       .nav { justify-content: space-between; }
       .nav button { padding: 10px 8px; }
+      .row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -565,12 +732,12 @@
   <script>
     const DEFAULT_STATE = {
       loggedIn: false,
-      currentUser: { name: 'Maya Chen', email: 'maya@example.com' },
+      currentUser: { name: 'Maya Chen', email: 'maya@example.com', username: '@maya' },
       users: {
-        me: { name: 'Maya Chen', email: 'maya@example.com' },
-        ava: { name: 'Ava Patel', email: 'ava@example.com' },
-        leo: { name: 'Leo Ortiz', email: 'leo@example.com' },
-        noah: { name: 'Noah Kim', email: 'noah@example.com' }
+        me: { name: 'Maya Chen', email: 'maya@example.com', username: '@maya' },
+        ava: { name: 'Ava Patel', email: 'ava@example.com', username: '@avap' },
+        leo: { name: 'Leo Ortiz', email: 'leo@example.com', username: '@leo' },
+        noah: { name: 'Noah Kim', email: 'noah@example.com', username: '@noah' }
       },
       posts: [
         { id: 1, author: 'me', text: 'Morning coffee and a fresh start. Anyone else trying a tiny reset this week?', likes: 12, liked: false },
@@ -601,7 +768,6 @@
     };
 
     const state = loadState();
-
     const authEl = document.getElementById('auth');
     const appEl = document.getElementById('app');
     const splash = document.getElementById('splash');
@@ -614,14 +780,32 @@
     function loadState() {
       try {
         const parsed = JSON.parse(localStorage.getItem('murmur-demo-state') || 'null');
-        return parsed ? { ...DEFAULT_STATE, ...parsed, users: { ...DEFAULT_STATE.users, ...(parsed.users || {}) }, conversations: { ...DEFAULT_STATE.conversations, ...(parsed.conversations || {}) }, posts: parsed.posts || DEFAULT_STATE.posts, alerts: parsed.alerts || DEFAULT_STATE.alerts, activeChat: parsed.activeChat || 'ava', activeView: parsed.activeView || 'home' } : structuredClone(DEFAULT_STATE);
+        return parsed ? { ...DEFAULT_STATE, ...parsed, users: { ...DEFAULT_STATE.users, ...(parsed.users || {}) }, conversations: { ...DEFAULT_STATE.conversations, ...(parsed.conversations || {}) }, posts: parsed.posts || DEFAULT_STATE.posts, alerts: parsed.alerts || DEFAULT_STATE.alerts, activeChat: parsed.activeChat || 'ava', activeView: parsed.activeView || 'home' } : JSON.parse(JSON.stringify(DEFAULT_STATE));
       } catch {
-        return structuredClone(DEFAULT_STATE);
+        return JSON.parse(JSON.stringify(DEFAULT_STATE));
       }
     }
 
     function initials(name) {
       return (name || 'M').split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0].toUpperCase()).join('') || 'M';
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.style.position = 'fixed';
+      toast.style.bottom = '24px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = 'rgba(20,33,61,0.88)';
+      toast.style.color = '#fff';
+      toast.style.padding = '10px 14px';
+      toast.style.borderRadius = '999px';
+      toast.style.zIndex = '300';
+      toast.style.fontWeight = '700';
+      toast.style.fontSize = '0.9rem';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2400);
     }
 
     function showAuth() {
@@ -637,20 +821,12 @@
       renderAll();
     }
 
-    function addDemoUser(name, email) {
-      const id = String(Math.random()).slice(2, 10);
-      state.users[id] = { name, email };
-      state.conversations[id] = [{ from: id, text: 'Hey! I’m new here.', time: 'now' }];
-      state.alerts.unshift({ id: Date.now(), title: `${name} joined your network`, text: `${name} is ready to chat.`, time: 'just now', unread: true });
-      saveState();
-    }
-
     function getCurrentUserName() {
       return state.currentUser?.name || 'Maya Chen';
     }
 
     function getUserById(id) {
-      return state.users[id] || { name: 'Someone', email: '' };
+      return state.users[id] || { name: 'Someone', email: '', username: '@someone' };
     }
 
     function renderPosts() {
@@ -670,7 +846,7 @@
               <div class="avatar">${initials(author.name)}</div>
               <div>
                 <strong>${author.name}</strong><br />
-                <small>just now</small>
+                <small>${author.username || '@user'}</small>
               </div>
             </div>
           </div>
@@ -696,7 +872,7 @@
           <div class="avatar">${initials(user.name)}</div>
           <div>
             <h4>${user.name}</h4>
-            <small>${user.email}</small>
+            <small>${user.username || '@user'}</small>
             <p style="margin-top:6px">Want to hang out soon?</p>
           </div>
         `;
@@ -797,6 +973,352 @@
       renderAll();
     }
 
+    function getPasswordStrength(password) {
+      let score = 0;
+      if (password.length >= 8) score += 1;
+      if (/[A-Z]/.test(password)) score += 1;
+      if (/[0-9]/.test(password)) score += 1;
+      if (/[^A-Za-z0-9]/.test(password)) score += 1;
+      if (password.length >= 12) score += 1;
+      if (score <= 2) return { score: 1, label: 'Weak', color: '#d84848' };
+      if (score <= 4) return { score: 2, label: 'Fair', color: '#d18b14' };
+      return { score: 3, label: 'Strong', color: '#14c8a0' };
+    }
+
+    function validateUsername(value) {
+      const username = value.trim();
+      if (!username) return 'Choose a username.';
+      if (!/^@?[a-zA-Z0-9._-]{3,20}$/.test(username)) return 'Use 3–20 letters/numbers, periods, dashes, or underscores.';
+      const normalized = username.startsWith('@') ? username : '@' + username;
+      const taken = Object.values(state.users).some(user => (user.username || '').toLowerCase() === normalized.toLowerCase());
+      if (taken) return 'That username is already taken.';
+      return '';
+    }
+
+    function openRegisterWizard() {
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-backdrop';
+      overlay.innerHTML = `
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="register-title">
+          <div class="modal-header">
+            <div>
+              <h3 id="register-title">Create your account</h3>
+              <small>Join Murmur in a few easy steps.</small>
+            </div>
+            <button class="close-btn" type="button" aria-label="Close">×</button>
+          </div>
+
+          <div class="stepper">
+            <div class="step-pill active">1. Account</div>
+            <div class="step-pill">2. Profile</div>
+            <div class="step-pill">3. Review</div>
+          </div>
+
+          <div class="step-body active" data-step="1">
+            <div class="row">
+              <div class="field">
+                <label>First name</label>
+                <input name="firstName" type="text" placeholder="First name" />
+              </div>
+              <div class="field">
+                <label>Last name</label>
+                <input name="lastName" type="text" placeholder="Last name" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Middle name (optional)</label>
+                <input name="middleName" type="text" placeholder="Middle name" />
+              </div>
+              <div class="field">
+                <label>Birthday</label>
+                <input name="birthday" type="date" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Username</label>
+              <input name="username" type="text" placeholder="@jian123" />
+              <div class="error" data-user-error></div>
+            </div>
+            <div class="field">
+              <label>Email address</label>
+              <input name="email" type="email" placeholder="you@example.com" />
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <div class="password-wrap">
+                <input name="password" type="password" placeholder="Create a password" />
+                <button class="password-toggle" type="button">Show</button>
+              </div>
+              <div class="strength-bar"><div class="strength-fill"></div></div>
+              <div class="password-feedback"><strong>Weak</strong> Use 8+ characters and mix letters, numbers, symbols.</div>
+            </div>
+            <div class="field">
+              <label>Confirm password</label>
+              <div class="password-wrap">
+                <input name="confirmPassword" type="password" placeholder="Confirm your password" />
+                <button class="password-toggle" type="button">Show</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-body" data-step="2">
+            <div class="field">
+              <label>Profile photo (optional)</label>
+              <input name="photo" type="file" accept="image/*" />
+            </div>
+            <div class="field">
+              <label>Short bio</label>
+              <textarea name="bio" placeholder="Tell people a little about yourself..."></textarea>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Gender</label>
+                <select name="gender">
+                  <option value="">Prefer not to say</option>
+                  <option>Female</option>
+                  <option>Male</option>
+                  <option>Non-binary</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Location</label>
+                <input name="location" type="text" placeholder="City, Country" />
+              </div>
+            </div>
+            <div class="field">
+              <label>School</label>
+              <input name="school" type="text" placeholder="School or university" />
+            </div>
+            <div class="field">
+              <label>Interests</label>
+              <div class="interest-grid">
+                <span class="interest-option">Music</span>
+                <span class="interest-option">Gaming</span>
+                <span class="interest-option">Anime</span>
+                <span class="interest-option">Writing</span>
+                <span class="interest-option">Photography</span>
+                <span class="interest-option">Sports</span>
+                <span class="interest-option">Technology</span>
+                <span class="interest-option">Travel</span>
+                <span class="interest-option">Art</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="step-body" data-step="3">
+            <div class="profile-preview">
+              <div class="avatar" id="preview-avatar">U</div>
+              <div>
+                <h4 id="preview-name">Your name</h4>
+                <p id="preview-username">@yourname</p>
+              </div>
+            </div>
+            <div class="field">
+              <label>Bio</label>
+              <textarea id="preview-bio" readonly placeholder="No bio yet"></textarea>
+            </div>
+            <div class="field">
+              <label>Summary</label>
+              <div id="preview-summary" style="color:var(--muted); line-height:1.5; min-height:70px;"></div>
+            </div>
+            <label class="checkbox-row">
+              <input type="checkbox" id="termsCheck" />
+              <span>I agree to the <a href="#">Terms of Service</a>, <a href="#">Privacy Policy</a>, and I am 13+ years old.</span>
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn ghost" data-action="back">Back</button>
+            <button type="button" class="btn primary" data-action="next">Next</button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+
+      let step = 1;
+      const form = overlay.querySelector('.modal');
+      const stepPills = [...overlay.querySelectorAll('.step-pill')];
+      const stepBodies = [...overlay.querySelectorAll('.step-body')];
+      const nextButton = overlay.querySelector('[data-action="next"]');
+      const backButton = overlay.querySelector('[data-action="back"]');
+      const closeButton = overlay.querySelector('.close-btn');
+      const usernameInput = overlay.querySelector('input[name="username"]');
+      const passwordInput = overlay.querySelector('input[name="password"]');
+      const confirmInput = overlay.querySelector('input[name="confirmPassword"]');
+      const firstNameInput = overlay.querySelector('input[name="firstName"]');
+      const lastNameInput = overlay.querySelector('input[name="lastName"]');
+      const bioInput = overlay.querySelector('textarea[name="bio"]');
+      const photoInput = overlay.querySelector('input[name="photo"]');
+
+      const interestOptions = [...overlay.querySelectorAll('.interest-option')];
+      const selectedInterests = new Set();
+      interestOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+          const text = opt.textContent.trim();
+          if (selectedInterests.has(text)) selectedInterests.delete(text);
+          else selectedInterests.add(text);
+          opt.classList.toggle('selected', selectedInterests.has(text));
+        });
+      });
+
+      function updateStepUI() {
+        stepPills.forEach((pill, idx) => pill.classList.toggle('active', idx + 1 === step));
+        stepBodies.forEach(body => body.classList.toggle('active', Number(body.dataset.step) === step));
+        backButton.style.visibility = step === 1 ? 'hidden' : 'visible';
+        nextButton.textContent = step === 3 ? 'Create account' : 'Next';
+
+        if (step === 3) {
+          const first = (firstNameInput.value || 'Your').trim();
+          const last = (lastNameInput.value || 'Name').trim();
+          const username = (usernameInput.value || '@yourname').trim();
+          const name = [first, last].filter(Boolean).join(' ') || 'Your Name';
+          document.getElementById('preview-name').textContent = name;
+          document.getElementById('preview-avatar').textContent = initials(name);
+          document.getElementById('preview-username').textContent = username.startsWith('@') ? username : '@' + username;
+          document.getElementById('preview-bio').value = bioInput.value || 'No bio yet';
+          const summary = [
+            `Name: ${name}`,
+            `Username: ${username.startsWith('@') ? username : '@' + username}`,
+            `Email: ${(overlay.querySelector('input[name="email"]').value || 'your@email.com').trim()}`,
+            `Birthday: ${(overlay.querySelector('input[name="birthday"]').value || 'Not specified')}`,
+            `Location: ${(overlay.querySelector('input[name="location"]').value || 'Not specified')}`,
+            `Interests: ${selectedInterests.size ? [...selectedInterests].join(', ') : 'None selected'}`
+          ].join(' • ');
+          document.getElementById('preview-summary').textContent = summary;
+        }
+      }
+
+      function updateStrength() {
+        const password = passwordInput.value;
+        const strength = getPasswordStrength(password);
+        const fill = overlay.querySelector('.strength-fill');
+        const message = overlay.querySelector('.password-feedback');
+        const percent = password ? (strength.score / 3) * 100 : 0;
+        fill.style.width = `${percent}%`;
+        fill.style.background = strength.color;
+        message.innerHTML = `<strong style="color:${strength.color}">${strength.label}</strong> Use 8+ characters and mix letters, numbers, symbols.`;
+      }
+
+      function togglePasswordVisibility(button) {
+        const wrap = button.closest('.password-wrap');
+        const input = wrap.querySelector('input');
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        button.textContent = isPassword ? 'Hide' : 'Show';
+      }
+
+      overlay.querySelectorAll('.password-toggle').forEach(button => {
+        button.addEventListener('click', () => togglePasswordVisibility(button));
+      });
+
+      usernameInput.addEventListener('input', () => {
+        const error = validateUsername(usernameInput.value);
+        const errorBox = overlay.querySelector('[data-user-error]');
+        errorBox.textContent = error;
+      });
+
+      passwordInput.addEventListener('input', updateStrength);
+      firstNameInput.addEventListener('input', updateStepUI);
+      lastNameInput.addEventListener('input', updateStepUI);
+      usernameInput.addEventListener('input', updateStepUI);
+      bioInput.addEventListener('input', updateStepUI);
+      overlay.querySelector('input[name="location"]').addEventListener('input', updateStepUI);
+      overlay.querySelector('input[name="email"]').addEventListener('input', updateStepUI);
+      overlay.querySelector('input[name="birthday"]').addEventListener('input', updateStepUI);
+
+      nextButton.addEventListener('click', () => {
+        if (step === 1) {
+          if (!firstNameInput.value.trim() || !lastNameInput.value.trim()) {
+            showToast('Add your first and last name.');
+            return;
+          }
+          const usernameError = validateUsername(usernameInput.value);
+          if (usernameError) {
+            showToast(usernameError);
+            return;
+          }
+          if (!overlay.querySelector('input[name="email"]').value.trim()) {
+            showToast('Add your email address.');
+            return;
+          }
+          if (!passwordInput.value || passwordInput.value.length < 8) {
+            showToast('Password must be at least 8 characters long.');
+            return;
+          }
+          if (passwordInput.value !== confirmInput.value) {
+            showToast('Passwords do not match.');
+            return;
+          }
+          step = 2;
+          updateStepUI();
+          return;
+        }
+
+        if (step === 2) {
+          step = 3;
+          updateStepUI();
+          return;
+        }
+
+        if (step === 3) {
+          const check = document.getElementById('termsCheck');
+          if (!check.checked) {
+            showToast('You must accept the terms before creating your account.');
+            return;
+          }
+
+          const first = firstNameInput.value.trim();
+          const middle = overlay.querySelector('input[name="middleName"]').value.trim();
+          const last = lastNameInput.value.trim();
+          const fullName = [first, middle, last].filter(Boolean).join(' ');
+          const username = usernameInput.value.trim();
+          const normalizedUser = username.startsWith('@') ? username : '@' + username;
+          const email = overlay.querySelector('input[name="email"]').value.trim();
+          const password = passwordInput.value.trim();
+
+          state.loggedIn = true;
+          state.currentUser = {
+            name: fullName,
+            email,
+            username: normalizedUser
+          };
+          state.users.me = { ...state.currentUser };
+
+          if (!state.posts.some(post => post.author === 'me')) {
+            state.posts.unshift({
+              id: Date.now(),
+              author: 'me',
+              text: 'Just joined Murmur. Hello, everyone!',
+              likes: 0,
+              liked: false
+            });
+          }
+
+          saveState();
+          overlay.remove();
+          showApp();
+          showToast('Account created successfully!');
+        }
+      });
+
+      backButton.addEventListener('click', () => {
+        if (step > 1) {
+          step -= 1;
+          updateStepUI();
+        }
+      });
+
+      closeButton.addEventListener('click', () => overlay.remove());
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) overlay.remove();
+      });
+
+      updateStepUI();
+      updateStrength();
+    }
+
     function login(email, password) {
       const normalized = String(email || '').trim();
       if (!normalized || !String(password || '').trim()) {
@@ -808,25 +1330,8 @@
         return;
       }
       state.loggedIn = true;
-      state.currentUser = { name: 'Maya Chen', email: normalized };
-      state.users.me = { name: 'Maya Chen', email: normalized };
-      saveState();
-      showApp();
-    }
-
-    function createAccount() {
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-      if (!email || !password) {
-        authError.textContent = 'Create an account with an email and password.';
-        return;
-      }
-      const name = email.split('@')[0].replace(/[._-]/g, ' ');
-      state.loggedIn = true;
-      state.currentUser = { name: name.charAt(0).toUpperCase() + name.slice(1), email };
-      state.users.me = state.currentUser;
-      state.posts.unshift({ id: Date.now(), author: 'me', text: 'Just created my new Murmur account. Hello, world!', likes: 0, liked: false });
-      addDemoUser('Ava Patel', 'ava@example.com');
+      state.currentUser = { name: 'Maya Chen', email: normalized, username: '@maya' };
+      state.users.me = { name: 'Maya Chen', email: normalized, username: '@maya' };
       saveState();
       showApp();
     }
@@ -868,7 +1373,7 @@
     document.getElementById('loginBtn').addEventListener('click', () => {
       login(document.getElementById('email').value, document.getElementById('password').value);
     });
-    document.getElementById('createBtn').addEventListener('click', createAccount);
+    document.getElementById('createBtn').addEventListener('click', openRegisterWizard);
     document.getElementById('resetBtn').addEventListener('click', resetPassword);
     document.getElementById('postBtn').addEventListener('click', createPost);
     document.getElementById('sendBtn').addEventListener('click', sendMessage);
